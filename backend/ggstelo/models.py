@@ -2,8 +2,8 @@ from django.db import models
 
 # Create your models here.
 class Player(models.Model):
-  id=models.CharField(max_length=50)
-  slug=models.SlugField(max_length=50)
+  id=models.CharField(max_length=50, primary_key=True, unique=True)
+  slug=models.SlugField(max_length=50, unique=True)
   gamer_tag=models.CharField(max_length=50)
   elo=models.PositiveIntegerField(default=1000)
   highest_elo=models.PositiveIntegerField(default=1000)
@@ -15,4 +15,3 @@ class Player(models.Model):
   
   def __str__(self):
     return self.gamer_tag
-
