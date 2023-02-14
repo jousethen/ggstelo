@@ -6,5 +6,7 @@ urlpatterns = [
     path('players/<str:slug>', PlayerDetailAPIView.as_view(), name="player"),
     path('tournaments', TournamentListAPIView.as_view(), name="tournaments"),
     path('tournaments/<str:slug>',
-         TournamentDetailAPIView.as_view(), name="tournament")
+         TournamentDetailView.as_view(), name="tournament"),
+    path('tournament',
+         TournamentCreate.as_view(), name="tournament")
 ]

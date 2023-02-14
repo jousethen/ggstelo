@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import generics, response, status, request
+from rest_framework import generics, response, status, request, views
 from .models import Player, Tournament
 from .serializers import PlayerSerializer, TournamentSerializer
 # Create your views here.
@@ -34,14 +34,23 @@ class TournamentListAPIView(generics.ListAPIView):
         return Tournament.objects.all()
 
 
-class TournamentDetailAPIView(generics.GenericAPIView):
+class TournamentDetailView(generics.GenericAPIView):
     serializer_class = TournamentSerializer
 
     def get(self, request, slug):
-        print(request.method)
         query_set = Tournament.objects.filter(slug=slug).first()
 
         if query_set:
             return response.Response(self.serializer_class(query_set).data)
 
         return response.Response('Not found', status=status.HTTP_404_NOT_FOUND)
+
+class TournamentCreate(generics.CreateAPIView):
+    def post(self, request):
+        tournament = request.data.get('tournament')
+        serializer = TournamentSerializer(data=tournament)
+
+        if serializer.is_valid(raise_exception=True):
+            tournament_saved = serializer.save()
+
+        return response.Response({"success: Yay"})
