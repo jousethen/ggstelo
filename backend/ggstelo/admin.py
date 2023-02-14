@@ -25,4 +25,4 @@ class MatchModelAdmin(admin.ModelAdmin):
 
 admin.site.register(Player, PlayerModelAdmin)
 admin.site.register(Tournament, TournamentModelAdmin)
-admin.site.register(Match, MatchModelAdmin, name="Matches")
+admin.site.register(Match, MatchModelAdmin)
