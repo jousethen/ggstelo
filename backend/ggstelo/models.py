@@ -1,17 +1,62 @@
+
 from django.db import models
+from django.forms import ValidationError
 
 # Create your models here.
+
+
 class Player(models.Model):
-  id=models.CharField(max_length=50, primary_key=True, unique=True)
-  slug=models.SlugField(max_length=50, unique=True)
-  gamer_tag=models.CharField(max_length=50)
-  elo=models.PositiveIntegerField(default=1000)
-  highest_elo=models.PositiveIntegerField(default=1000)
-  created_at=models.DateTimeField(auto_now_add=True)
-  updated_at=models.DateTimeField(auto_now=True)
-  
-  class Meta:
-    ordering=('-gamer_tag',)
-  
-  def __str__(self):
-    return self.gamer_tag
+    id = models.CharField(max_length=50, primary_key=True, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
+    gamer_tag = models.CharField(max_length=50)
+    elo = models.PositiveIntegerField(default=1000)
+    highest_elo = models.PositiveIntegerField(default=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('gamer_tag',)
+
+    def __str__(self):
+        return self.gamer_tag
+
+# Combination of Event and Tournament Model from Startgg
+
+
+class Tournament(models.Model):
+    slug = models.SlugField(max_length=50, unique=True, primary_key=True)
+    name = models.CharField(max_length=50)
+    players = models.ManyToManyField(Player)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+# Set from StartGG
+
+
+class Match(models.Model):
+    id = models.CharField(max_length=50, primary_key=True)
+    display_score = models.CharField(max_length=50)
+    winner = models.ForeignKey(
+        Player, on_delete=models.CASCADE, related_name='winner_match_set', null=True)
+    loser = models.ForeignKey(
+        Player, on_delete=models.CASCADE, related_name='loser_match_set', null=True)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name_plural = "matches"
+
+    def clean(self):
+        if self.winner == self.loser:
+            raise ValidationError(('Player cannot play themselves'))
+
+    def __str__(self):
+        return self.id
