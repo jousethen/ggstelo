@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics, response, status, request, views
 from .models import Player, Tournament
 from .serializers import PlayerSerializer, TournamentSerializer
+from .util.sggmodule import *
+from .util.queries import tournament_q
 # Create your views here.
 
 
@@ -45,11 +47,15 @@ class TournamentDetailView(generics.GenericAPIView):
 
         return response.Response('Not found', status=status.HTTP_404_NOT_FOUND)
 
+
 class TournamentCreate(generics.CreateAPIView):
+
     def post(self, request):
         tournament = request.data.get('tournament')
         serializer = TournamentSerializer(data=tournament)
 
+        variables = {"slug": "tsb-online-2-pc"}
+        print(run_query(tournament_q, variables))
         if serializer.is_valid(raise_exception=True):
             tournament_saved = serializer.save()
 
