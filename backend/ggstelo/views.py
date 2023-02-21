@@ -1,9 +1,11 @@
+from decouple import config
 from django.shortcuts import render
-from rest_framework import generics, response, status, request, views
+from rest_framework import generics, response, status, request as req, views
 from .models import Player, Tournament
 from .serializers import PlayerSerializer, TournamentSerializer
-from .util.sggmodule import *
-from .util.queries import tournament_q
+
+import pysmashgg
+
 # Create your views here.
 
 
@@ -51,12 +53,20 @@ class TournamentDetailView(generics.GenericAPIView):
 class TournamentCreate(generics.CreateAPIView):
 
     def post(self, request):
-        tournament = request.data.get('tournament')
-        serializer = TournamentSerializer(data=tournament)
+        key = config('API_KEY')
+        smash = pysmashgg.SmashGG(key, True)
+        t_slug = request.data.get("url").split(
+            "/tournament/")[1].split("/")[0]
+        e_slug = request.data.get("url").split(
+            "/event/")[1].split("/")[0]
 
-        variables = {"slug": "tsb-online-2-pc"}
-        print(run_query(tournament_q, variables))
-        if serializer.is_valid(raise_exception=True):
-            tournament_saved = serializer.save()
+        tournament = smash.tournament_show(t_slug)
+        results = smash.tournament_show_sets(t_slug, e_slug, 1)
+        print(results)
+
+        # serializer = TournamentSerializer(data=tournament)
+
+       # if serializer.is_valid(raise_exception=True):
+        #   tournament_saved = serializer.save()
 
         return response.Response({"success: Yay"})
