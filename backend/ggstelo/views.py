@@ -61,8 +61,18 @@ class TournamentCreate(generics.CreateAPIView):
             "/event/")[1].split("/")[0]
 
         tournament = smash.tournament_show(t_slug)
-        results = smash.tournament_show_sets(t_slug, e_slug, 1)
-        print(results)
+        i = 1
+
+        sets = []
+        while (i > 0):
+
+            results = smash.tournament_show_sets(t_slug, e_slug, i)
+            sets.extend(results)
+
+            if results == []:
+                break
+            i += 1
+        print(len(sets))
 
         # serializer = TournamentSerializer(data=tournament)
 
