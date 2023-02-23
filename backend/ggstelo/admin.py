@@ -18,8 +18,9 @@ class TournamentModelAdmin(admin.ModelAdmin):
 
 
 class MatchModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'display_score')
-    search_fields = ('id', 'display_score')
+    list_display = ('id', 'player1', 'player2',
+                    'player1_score', 'player2_score')
+    search_fields = ('id', 'player1', "player2")
     list_per_page = 50
 
 

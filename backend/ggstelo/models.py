@@ -41,12 +41,16 @@ class Tournament(models.Model):
 
 class Match(models.Model):
     id = models.CharField(max_length=50, primary_key=True)
-    display_score = models.CharField(max_length=50)
-    winner = models.ForeignKey(
-        Player, on_delete=models.CASCADE, related_name='winner_match_set', null=True)
-    loser = models.ForeignKey(
-        Player, on_delete=models.CASCADE, related_name='loser_match_set', null=True)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    player1 = models.ForeignKey(
+        Player, on_delete=models.CASCADE, related_name='player1_match_set', null=True)
+    player1_score = models.CharField(max_length=50)
+    player2 = models.ForeignKey(
+        Player, on_delete=models.CASCADE, related_name='player2_match_set', null=True)
+    player2_score = models.CharField(max_length=50)
+    player1_elo_change = models.IntegerField()
+    player2_elo_change = models.IntegerField()
+    tournament = models.ForeignKey(
+        Tournament, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

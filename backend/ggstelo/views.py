@@ -90,7 +90,6 @@ class TournamentCreate(generics.CreateAPIView):
                 gamer_tag=set["entrant2Players"][0]["playerTag"])
 
             # Get or Create Sets
-            Match.objects
         # serializer = TournamentSerializer(data=tournament)
 
        # if serializer.is_valid(raise_exception=True):
