@@ -1,7 +1,7 @@
 from decouple import config
 from django.shortcuts import render
 from rest_framework import generics, response, status, request as req, views
-from .models import Player, Tournament
+from .models import Player, Tournament, Match
 from .serializers import PlayerSerializer, TournamentSerializer
 
 import pysmashgg
@@ -64,7 +64,7 @@ class TournamentCreate(generics.CreateAPIView):
 
         # Get Tournament
         tournament = smash.tournament_show(t_slug)
-        
+
         i = 1
         sets = []
 
@@ -76,11 +76,21 @@ class TournamentCreate(generics.CreateAPIView):
             if results == []:
                 break
             i += 1
-       
+
         # Iterate Sets
         for set in sets:
-            player1 = Player.objects.get_or_create(id = set["entrant1Id"], 
-                                                   slug=set["slug"])
+            # Get or Create players
+            player1 = Player.objects.get_or_create(
+                id=set["entrant1Players"][0]["playerId"],
+                slug=set["entrant1Players"][0]["playerSlug"],
+                gamer_tag=set["entrant1Players"][0]["playerTag"])
+            player2 = Player.objects.get_or_create(
+                id=set["entrant2Players"][0]["playerId"],
+                slug=set["entrant2Players"][0]["playerSlug"],
+                gamer_tag=set["entrant2Players"][0]["playerTag"])
+
+            # Get or Create Sets
+            Match.objects
         # serializer = TournamentSerializer(data=tournament)
 
        # if serializer.is_valid(raise_exception=True):
