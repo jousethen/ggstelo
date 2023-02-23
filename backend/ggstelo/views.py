@@ -55,25 +55,32 @@ class TournamentCreate(generics.CreateAPIView):
     def post(self, request):
         key = config('API_KEY')
         smash = pysmashgg.SmashGG(key, True)
+
+        # Parse info we need from body
         t_slug = request.data.get("url").split(
             "/tournament/")[1].split("/")[0]
         e_slug = request.data.get("url").split(
             "/event/")[1].split("/")[0]
 
+        # Get Tournament
         tournament = smash.tournament_show(t_slug)
+        
         i = 1
-
         sets = []
-        while (i > 0):
 
+        # Get All Sets (TODO move to helper)
+        while (i > 0):
             results = smash.tournament_show_sets(t_slug, e_slug, i)
             sets.extend(results)
 
             if results == []:
                 break
             i += 1
-        print(len(sets))
-
+       
+        # Iterate Sets
+        for set in sets:
+            player1 = Player.objects.get_or_create(id = set["entrant1Id"], 
+                                                   slug=set["slug"])
         # serializer = TournamentSerializer(data=tournament)
 
        # if serializer.is_valid(raise_exception=True):
