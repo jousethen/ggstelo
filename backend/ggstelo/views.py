@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import generics, response, status, request as req, views
 from .models import Player, Tournament, Match
 from .serializers import PlayerSerializer, TournamentSerializer
-
+from .libs import elo
 import pysmashgg
 
 # Create your views here.
@@ -89,7 +89,8 @@ class TournamentCreate(generics.CreateAPIView):
                 slug=set["entrant2Players"][0]["playerSlug"],
                 gamer_tag=set["entrant2Players"][0]["playerTag"])
 
-            # Get or Create Sets
+            # Calculate Elo Changes
+
         # serializer = TournamentSerializer(data=tournament)
 
        # if serializer.is_valid(raise_exception=True):
