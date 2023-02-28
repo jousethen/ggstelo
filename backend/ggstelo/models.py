@@ -26,7 +26,6 @@ class Player(models.Model):
 class Tournament(models.Model):
     slug = models.SlugField(max_length=50, unique=True, primary_key=True)
     name = models.CharField(max_length=50)
-    players = models.ManyToManyField(Player)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

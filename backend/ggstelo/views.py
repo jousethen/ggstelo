@@ -62,8 +62,10 @@ class TournamentCreate(generics.CreateAPIView):
         e_slug = request.data.get("url").split(
             "/event/")[1].split("/")[0]
 
-        # Get Tournament
-        tournament = smash.tournament_show(t_slug)
+        # Get or Create Tournament
+        tournament_data = smash.tournament_show(t_slug)
+        tournament = Tournament.objects.get_or_create(
+            slug=t_slug, name=tournament_data["name"])
 
         i = 1
         sets = []
@@ -79,21 +81,36 @@ class TournamentCreate(generics.CreateAPIView):
 
         # Iterate Sets
         for set in sets:
-            # Get or Create players
-            player1 = Player.objects.get_or_create(
-                id=set["entrant1Players"][0]["playerId"],
-                slug=set["entrant1Players"][0]["playerSlug"].split("/")[1],
-                gamer_tag=set["entrant1Players"][0]["playerTag"])[0]
-            player2 = Player.objects.get_or_create(
-                id=set["entrant2Players"][0]["playerId"],
-                slug=set["entrant2Players"][0]["playerSlug"].split("/")[1],
-                gamer_tag=set["entrant2Players"][0]["playerTag"])[0]
+            # Skip if DQ
+            if set["entrant1Score"] != -1 and set["entrant2Score"] != -1:
+                # Get or Create players
+                player1 = Player.objects.get_or_create(
+                    id=set["entrant1Players"][0]["playerId"],
+                    slug=set["entrant1Players"][0]["playerSlug"].split("/")[1],
+                    gamer_tag=set["entrant1Players"][0]["playerTag"])
+                player2 = Player.objects.get_or_create(
+                    id=set["entrant2Players"][0]["playerId"],
+                    slug=set["entrant2Players"][0]["playerSlug"].split("/")[1],
+                    gamer_tag=set["entrant2Players"][0]["playerTag"])
 
-            if (set["entrant1Score"] > set["entrant2Score"]):
-                calculated_elo = elo.calculate_elo(player1, player2, 1)
-            else:
-                calculated_elo = elo.calculate_elo(player1, player2, 0)
-            # TODO create set with winner and loser
+                if (set["entrant1Score"] > set["entrant2Score"]):
+                    calculated_elo = elo.calculate_elo(
+                        player1[0], player2[0], 1)
+                else:
+                    calculated_elo = elo.calculate_elo(
+                        player1[0], player2[0], 0)
+
+                Match.objects.get_or_create(
+                    id=set["id"],
+                    player1=player1[0],
+                    player1_score=set["entrant1Score"],
+                    player2=player2[0],
+                    player2_score=set["entrant2Score"],
+                    player1_elo_change=calculated_elo[0] - player1[0].elo,
+                    player2_elo_change=calculated_elo[1] - player2[0].elo,
+                    tournament=tournament[0]
+                )
+
         # serializer = TournamentSerializer(data=tournament)
 
        # if serializer.is_valid(raise_exception=True):

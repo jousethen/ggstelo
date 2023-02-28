@@ -15,7 +15,7 @@ def calculate_elo(player_a, player_b, outcome):
     Returns:
         A tuple containing the updated Elo ratings for player A and player B.
     """
-    # TODO Calculate K Factor for each player
+    # Calculate K Factor for each player
     pa_match_count = Match.objects.filter(player1__exact=player_a).count(
     ) + Match.objects.filter(player2__exact=player_a).count()
 
@@ -36,7 +36,6 @@ def calculate_elo(player_a, player_b, outcome):
     else:
         player_b_k = 40
 
-    print(player_a_k, player_b_k)
     expected_a = 1 / (1 + 10**((player_b.elo - player_a.elo) / 400))
     expected_b = 1 / (1 + 10**((player_a.elo - player_b.elo) / 400))
     rating_a_new = player_a.elo + player_a_k * (outcome - expected_a)
