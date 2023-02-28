@@ -39,15 +39,15 @@ class Tournament(models.Model):
 
 
 class Match(models.Model):
-    id = models.CharField(max_length=50, primary_key=True)
+    id = models.CharField(max_length=50, primary_key=True, unique=True)
     player1 = models.ForeignKey(
         Player, on_delete=models.CASCADE, related_name='player1_match_set', null=True)
     player1_score = models.CharField(max_length=50)
     player2 = models.ForeignKey(
         Player, on_delete=models.CASCADE, related_name='player2_match_set', null=True)
     player2_score = models.CharField(max_length=50)
-    player1_elo_change = models.IntegerField()
-    player2_elo_change = models.IntegerField()
+    player1_elo_change = models.IntegerField(default=0)
+    player2_elo_change = models.IntegerField(default=0)
     tournament = models.ForeignKey(
         Tournament, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

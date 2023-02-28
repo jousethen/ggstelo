@@ -1,3 +1,4 @@
+from operator import attrgetter
 from decouple import config
 from django.shortcuts import render
 from rest_framework import generics, response, status, request as req, views
@@ -79,19 +80,24 @@ class TournamentCreate(generics.CreateAPIView):
                 break
             i += 1
 
+        sets.sort(key=lambda x: x['id'], reverse=False)
         # Iterate Sets
         for set in sets:
             # Skip if DQ
             if set["entrant1Score"] != -1 and set["entrant2Score"] != -1:
                 # Get or Create players
                 player1 = Player.objects.get_or_create(
-                    id=set["entrant1Players"][0]["playerId"],
-                    slug=set["entrant1Players"][0]["playerSlug"].split("/")[1],
-                    gamer_tag=set["entrant1Players"][0]["playerTag"])
-                player2 = Player.objects.get_or_create(
-                    id=set["entrant2Players"][0]["playerId"],
-                    slug=set["entrant2Players"][0]["playerSlug"].split("/")[1],
-                    gamer_tag=set["entrant2Players"][0]["playerTag"])
+                    id=set["entrant1Players"][0]["playerId"])
+                player1[0].slug = set["entrant1Players"][0]["playerSlug"].split(
+                    "/")[1]
+                player1[0].gamer_tag = set["entrant1Players"][0]["playerTag"]
+                player1[0].save()
+                
+                print(set["entrant2Players"][0]["playerSlug"])
+                player2 = Player.objects.get_or_create( id=set["entrant2Players"][0]["playerId"])
+                player2[0].slug = set["entrant2Players"][0]["playerSlug"].split("/")[1]
+                player2[0].gamer_tag = set["entrant2Players"][0]["playerTag"]
+                player2[0].save()
 
                 if (set["entrant1Score"] > set["entrant2Score"]):
                     calculated_elo = elo.calculate_elo(
@@ -100,20 +106,30 @@ class TournamentCreate(generics.CreateAPIView):
                     calculated_elo = elo.calculate_elo(
                         player1[0], player2[0], 0)
 
-                Match.objects.get_or_create(
-                    id=set["id"],
-                    player1=player1[0],
-                    player1_score=set["entrant1Score"],
-                    player2=player2[0],
-                    player2_score=set["entrant2Score"],
-                    player1_elo_change=calculated_elo[0] - player1[0].elo,
-                    player2_elo_change=calculated_elo[1] - player2[0].elo,
-                    tournament=tournament[0]
-                )
+                match = Match.objects.get_or_create(id=set["id"])
 
-        # serializer = TournamentSerializer(data=tournament)
+                if match[1] == True:
+                    # Match Details
+                    match[0].player1 = player1[0]
+                    match[0].player1_score = set["entrant1Score"]
+                    match[0].player2 = player2[0]
+                    match[0].player2_score = set["entrant2Score"]
+                    match[0].player1_elo_change = calculated_elo[0] - \
+                        player1[0].elo
+                    match[0].player2_elo_change = calculated_elo[1] - \
+                        player2[0].elo
+                    match[0].tournament = tournament[0]
+                    match[0].save()
 
-       # if serializer.is_valid(raise_exception=True):
-        #   tournament_saved = serializer.save()
+                    # Update Player Elos
+                    player1[0].elo = calculated_elo[0]
+                    player1[0].highest_elo = max(
+                        calculated_elo[0], player1[0].highest_elo)
+                    player1[0].save()
 
-        return response.Response({"success: Yay"})
+                    player2[0].elo = calculated_elo[1]
+                    player2[0].highest_elo = max(
+                        calculated_elo[1], player2[0].highest_elo)
+                    player2[0].save()
+
+        return response.Response({"success: Successfully imported tournament"})
