@@ -59,7 +59,7 @@ class Match(models.Model):
         verbose_name_plural = "matches"
 
     def clean(self):
-        if self.winner == self.loser:
+        if self.player1 == self.player2:
             raise ValidationError(('Player cannot play themselves'))
 
     def __str__(self):

@@ -83,14 +83,18 @@ class TournamentCreate(generics.CreateAPIView):
             player1 = Player.objects.get_or_create(
                 id=set["entrant1Players"][0]["playerId"],
                 slug=set["entrant1Players"][0]["playerSlug"],
-                gamer_tag=set["entrant1Players"][0]["playerTag"])
+                gamer_tag=set["entrant1Players"][0]["playerTag"])[0]
             player2 = Player.objects.get_or_create(
                 id=set["entrant2Players"][0]["playerId"],
                 slug=set["entrant2Players"][0]["playerSlug"],
-                gamer_tag=set["entrant2Players"][0]["playerTag"])
+                gamer_tag=set["entrant2Players"][0]["playerTag"])[0]
 
-            # Calculate Elo Changes
+            if (set["entrant1Score"] > set["entrant2Score"]):
+                calculated_elo = elo.calculate_elo(player1, player2, 1)
+            else:
+                calculated_elo = elo.calculate_elo(player1, player2, 0)
 
+            print(calculated_elo)
         # serializer = TournamentSerializer(data=tournament)
 
        # if serializer.is_valid(raise_exception=True):
