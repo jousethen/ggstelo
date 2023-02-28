@@ -95,6 +95,7 @@ class TournamentCreate(generics.CreateAPIView):
                 calculated_elo = elo.calculate_elo(player1, player2, 0)
 
             print(calculated_elo)
+            # TODO create set with winner and loser
         # serializer = TournamentSerializer(data=tournament)
 
        # if serializer.is_valid(raise_exception=True):
