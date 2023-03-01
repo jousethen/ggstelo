@@ -2,6 +2,7 @@ from rest_framework import generics, response, status, request as req, views
 from .models import Player, Tournament, Match
 from .serializers import PlayerSerializer, TournamentSerializer
 from .libs import elo, util
+from decouple import config
 import pysmashgg
 
 # Create your views here.
