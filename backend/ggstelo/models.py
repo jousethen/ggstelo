@@ -14,8 +14,8 @@ class Player(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:  
-        ordering = ('elo',)
+    class Meta:
+        ordering = ('-elo',)
 
     def __str__(self):
         return self.gamer_tag
@@ -30,7 +30,7 @@ class Tournament(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('created_at',)
 
     def __str__(self):
         return self.name
