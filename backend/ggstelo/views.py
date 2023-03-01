@@ -1,7 +1,3 @@
-from operator import attrgetter
-from re import T
-from decouple import config
-from django.shortcuts import render
 from rest_framework import generics, response, status, request as req, views
 from .models import Player, Tournament, Match
 from .serializers import PlayerSerializer, TournamentSerializer
@@ -69,7 +65,6 @@ class TournamentCreate(generics.CreateAPIView):
         tournament = Tournament.objects.get_or_create(
             slug=t_slug, name=tournament_data["name"])
 
-
         # Get All Sets (TODO move to helper)
         sets = util.get_sets(t_slug, e_slug)
 
@@ -82,16 +77,18 @@ class TournamentCreate(generics.CreateAPIView):
                 # Get or Create players
                 player1 = Player.objects.get_or_create(
                     id=set["entrant1Players"][0]["playerId"])
-                player1[0].slug = util.get_slug (set["entrant1Players"][0]["playerSlug"])
+                player1[0].slug = util.get_slug(
+                    set["entrant1Players"][0]["playerSlug"])
                 player1[0].gamer_tag = set["entrant1Players"][0]["playerTag"]
                 player1[0].save()
 
                 print(set["entrant2Players"][0]["playerSlug"],
                       set["entrant2Players"][0]["playerTag"])
-                
+
                 player2 = Player.objects.get_or_create(
                     id=set["entrant2Players"][0]["playerId"])
-                player2[0].slug = util.get_slug(set["entrant2Players"][0]["playerSlug"])
+                player2[0].slug = util.get_slug(
+                    set["entrant2Players"][0]["playerSlug"])
                 player2[0].gamer_tag = set["entrant2Players"][0]["playerTag"]
                 player2[0].save()
 

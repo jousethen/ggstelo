@@ -1,3 +1,8 @@
+import pysmashgg
+from decouple import config
+key = config('API_KEY')
+smash = pysmashgg.SmashGG(key, True)
+
 def get_slug(slug):
     if type(slug) == str:
         return slug.replace(
