@@ -14,7 +14,7 @@ export default async function Home() {
         </p>
         <ol>
           {data.map((d: Player, index: number) => {
-            return <li key={index}>{d.gamer_tag}</li>
+            return <li key={index}>{d.gamer_tag}{d.elo}</li>
           })}
         </ol>
       </div>
