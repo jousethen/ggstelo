@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default async function Home() {
   const data = await getData()
+  console.log(data)
   return (
     <main className={styles.main}>
       <div className={styles.description}>
@@ -24,6 +25,5 @@ export default async function Home() {
 
 export async function getData() {
   const response = await fetch(`${process.env.BASE_URL + routes.getPlayers.path}`)
-
   return response.json()
 }

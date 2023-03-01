@@ -5,6 +5,7 @@ export interface Player {
   gamer_tag: string
   elo: number
   highest_elo: number
+  matches: Match[]
   created_at: Date
   updated_at: Date
 }

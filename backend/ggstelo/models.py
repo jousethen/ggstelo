@@ -14,8 +14,8 @@ class Player(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        ordering = ('gamer_tag',)
+    class Meta:  
+        ordering = ('elo',)
 
     def __str__(self):
         return self.gamer_tag
