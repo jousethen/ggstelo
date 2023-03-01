@@ -1,10 +1,11 @@
 from operator import attrgetter
+from re import T
 from decouple import config
 from django.shortcuts import render
 from rest_framework import generics, response, status, request as req, views
 from .models import Player, Tournament, Match
 from .serializers import PlayerSerializer, TournamentSerializer
-from .libs import elo
+from .libs import elo, util
 import pysmashgg
 
 # Create your views here.
@@ -68,18 +69,11 @@ class TournamentCreate(generics.CreateAPIView):
         tournament = Tournament.objects.get_or_create(
             slug=t_slug, name=tournament_data["name"])
 
-        i = 1
-        sets = []
 
         # Get All Sets (TODO move to helper)
-        while (i > 0):
-            results = smash.tournament_show_sets(t_slug, e_slug, i)
-            sets.extend(results)
+        sets = util.get_sets(t_slug, e_slug)
 
-            if results == []:
-                break
-            i += 1
-
+        # Sort Sets by id (order which they happened)
         sets.sort(key=lambda x: x['id'], reverse=False)
         # Iterate Sets
         for set in sets:
@@ -88,27 +82,29 @@ class TournamentCreate(generics.CreateAPIView):
                 # Get or Create players
                 player1 = Player.objects.get_or_create(
                     id=set["entrant1Players"][0]["playerId"])
-                player1[0].slug = set["entrant1Players"][0]["playerSlug"].split(
-                    "/")[1]
+                player1[0].slug = util.get_slug (set["entrant1Players"][0]["playerSlug"])
                 player1[0].gamer_tag = set["entrant1Players"][0]["playerTag"]
                 player1[0].save()
+
+                print(set["entrant2Players"][0]["playerSlug"],
+                      set["entrant2Players"][0]["playerTag"])
                 
-                print(set["entrant2Players"][0]["playerSlug"])
-                player2 = Player.objects.get_or_create( id=set["entrant2Players"][0]["playerId"])
-                player2[0].slug = set["entrant2Players"][0]["playerSlug"].split("/")[1]
+                player2 = Player.objects.get_or_create(
+                    id=set["entrant2Players"][0]["playerId"])
+                player2[0].slug = util.get_slug(set["entrant2Players"][0]["playerSlug"])
                 player2[0].gamer_tag = set["entrant2Players"][0]["playerTag"]
                 player2[0].save()
-
-                if (set["entrant1Score"] > set["entrant2Score"]):
-                    calculated_elo = elo.calculate_elo(
-                        player1[0], player2[0], 1)
-                else:
-                    calculated_elo = elo.calculate_elo(
-                        player1[0], player2[0], 0)
 
                 match = Match.objects.get_or_create(id=set["id"])
 
                 if match[1] == True:
+                    # calculate elo
+                    if (set["entrant1Score"] > set["entrant2Score"]):
+                        calculated_elo = elo.calculate_elo(
+                            player1[0], player2[0], 1)
+                    else:
+                        calculated_elo = elo.calculate_elo(
+                            player1[0], player2[0], 0)
                     # Match Details
                     match[0].player1 = player1[0]
                     match[0].player1_score = set["entrant1Score"]

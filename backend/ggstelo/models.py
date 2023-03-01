@@ -7,7 +7,7 @@ from django.forms import ValidationError
 
 class Player(models.Model):
     id = models.CharField(max_length=50, primary_key=True, unique=True)
-    slug = models.SlugField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=False)
     gamer_tag = models.CharField(max_length=50)
     elo = models.PositiveIntegerField(default=1000)
     highest_elo = models.PositiveIntegerField(default=1000)
