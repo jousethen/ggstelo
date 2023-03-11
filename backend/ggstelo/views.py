@@ -1,18 +1,50 @@
+from requests import Response
 from rest_framework import generics, response, status, request as req, views
 from .models import Player, Tournament, Match
 from .serializers import PlayerSerializer, TournamentSerializer
 from .libs import elo, util
 from decouple import config
 import pysmashgg
+from .paginators import CustomPagination
 
 # Create your views here.
 
 
 class PlayerListAPIView(generics.ListAPIView):
     serializer_class = PlayerSerializer
+    pagination_class = CustomPagination
+    queryset = Player.objects.all()
 
-    def get_queryset(self):
-        return Player.objects.all()
+    @property
+    def paginator(self):
+        """The paginator instance associated with the view, or `None`."""
+        if not hasattr(self, '_paginator'):
+            if self.pagination_class is None:
+                self._paginator = None
+            else:
+                self._paginator = self.pagination_class()
+        return self._paginator
+
+    def paginate_queryset(self, queryset):
+        """Return a single page of results, or `None` if pagination is disabled."""
+        if self.paginator is None:
+            return None
+        return self.paginator.paginate_queryset(queryset, self.request, view=self)
+
+    def get_paginated_response(self, data):
+        """Return a paginated style `Response` object for the given output data."""
+        assert self.paginator is not None
+        return self.paginator.get_paginated_response(data)
+
+    def get(self, request):
+        queryset = self.queryset
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
 
 class PlayerDetailAPIView(generics.GenericAPIView):
