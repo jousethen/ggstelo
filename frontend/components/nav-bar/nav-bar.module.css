@@ -1,9 +1,11 @@
 .nav-bar {
   display: flex;
   flex-direction: row;
-  margin: 1rem;
+  padding: 1rem;
   align-items: center;
   justify-content: space-between;
+  background-color: var(--white);
+  border-bottom: 1px solid var(--black);
 }
 
 .nav-menu-items {
