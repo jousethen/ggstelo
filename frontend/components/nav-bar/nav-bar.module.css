@@ -22,14 +22,37 @@
 @media (max-width: 640px) {
   .nav-menu-items {
     display: none;
+  }
 
+  ul.open {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    gap: 0;
+    right: 16px;
+    top: 48px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    background-color: var(--white);
+    flex-direction: column;
+  }
+
+  .list-item {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid var(--light-gray);
+    width: 100%;
+    height: fit-content;
+  }
+
+  .list-item:hover {
+    background-color: var(--light-gray);
   }
 
   .nav-menu-dropdown {
     display: block;
   }
 
-  .open {
+  button.open {
     display: block;
     color: red;
   }
