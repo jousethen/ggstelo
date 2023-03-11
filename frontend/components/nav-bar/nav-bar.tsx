@@ -1,8 +1,12 @@
+'use client';
 import Link from "next/link";
+import classNames from "classnames";
 import styles from "./nav-bar.module.css"
 import type { NavBarProps } from "./interfaces";
+import { useState } from "react";
 
 export default function NavBar({ }: NavBarProps): JSX.Element {
+  const [open, setOpen] = useState(false);
   return (
     <nav className={styles["nav-bar"]}>
       <Link href={"/"}>
@@ -14,7 +18,7 @@ export default function NavBar({ }: NavBarProps): JSX.Element {
         <li> <Link href="/about">Admin</Link></li>
       </ul>
 
-      <button className={styles["nav-menu-dropdown"]}>Icon</button>
+      <button className={classNames(styles["nav-menu-dropdown"], open && styles["open"])} onClick={() => setOpen(!open)}>Icon</button>
     </nav>
   );
 }
