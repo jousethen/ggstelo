@@ -1,19 +1,15 @@
 import { Inter } from '@next/font/google'
 import { Player } from '@/lib/types_be'
 import { routes } from '@/lib/routes'
+import EloTable from '@/components/elo-table/elo-table'
 const inter = Inter({ subsets: ['latin'] })
 
 export default async function Home() {
   const data = await getData()
   return (
     <main>
-      <div>
-        <ol>
-          {data.results.map((d: Player, index: number) => {
-            return <li key={index}>{d.gamer_tag} {d.elo}</li>
-          })}
-        </ol>
-      </div>
+
+      <EloTable tableData={data.results} />
     </main>
   )
 }
