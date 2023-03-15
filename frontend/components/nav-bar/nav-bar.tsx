@@ -4,7 +4,8 @@ import classNames from "classnames";
 import styles from "./nav-bar.module.css"
 import type { NavBarProps } from "./interfaces";
 import { useState } from "react";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 export default function NavBar({ }: NavBarProps): JSX.Element {
   const [open, setOpen] = useState(false);
   return (
@@ -17,8 +18,8 @@ export default function NavBar({ }: NavBarProps): JSX.Element {
         <li className={styles["list-item"]}> <Link href="/about">About</Link></li>
         <li className={styles["list-item"]}> <Link href="/about">Admin</Link></li>
       </ul>
+      <FontAwesomeIcon className={classNames(styles["nav-menu-dropdown"], open && styles["open"])} onClick={() => setOpen(!open)} icon={faBars} />
 
-      <button className={classNames(styles["nav-menu-dropdown"], open && styles["open"])} onClick={() => setOpen(!open)}>Icon</button>
     </nav>
   );
 }

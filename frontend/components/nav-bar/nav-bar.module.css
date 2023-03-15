@@ -52,10 +52,12 @@
 
   .nav-menu-dropdown {
     display: block;
+    cursor: pointer;
   }
 
-  button.open {
-    display: block;
-    color: red;
+  .nav-menu-dropdown.open {
+    box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.211);
+    background-color: var(--light-gray)
   }
+
 }
