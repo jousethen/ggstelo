@@ -9,7 +9,7 @@ export default async function Home() {
     <main>
       <div>
         <ol>
-          {data.map((d: Player, index: number) => {
+          {data.results.map((d: Player, index: number) => {
             return <li key={index}>{d.gamer_tag} {d.elo}</li>
           })}
         </ol>
@@ -19,6 +19,6 @@ export default async function Home() {
 }
 
 export async function getData() {
-  const response = await fetch(`${process.env.BASE_URL + routes.getPlayers.path}`)
+  const response = await fetch(`${process.env.BASE_URL + routes.getPlayers.path}?page=1&page_size=50`)
   return response.json()
 }
