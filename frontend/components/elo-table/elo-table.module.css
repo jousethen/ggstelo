@@ -1,3 +1,9 @@
 .elo-table {
-  display: block;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cell {
+  padding: 5px;
+  border: 1px solid var(--black);
 }
