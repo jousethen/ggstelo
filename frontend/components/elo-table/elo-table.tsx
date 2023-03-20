@@ -5,7 +5,7 @@ import styles from "./elo-table.module.css"
 export default function EloTable({ tableData }: EloTableProps): JSX.Element {
   return (
     <table className={styles["elo-table"]}>
-      <thead>
+      <thead className={styles["header"]}>
         <tr>
           <th>
             Rank
@@ -24,7 +24,7 @@ export default function EloTable({ tableData }: EloTableProps): JSX.Element {
       <tbody>
         {tableData.map((d: Player, index: number) => {
           return (
-            <tr key={index}>
+            <tr key={index} className={styles["row"]}>
               <td className={styles["cell"]}>{index + 1}</td>
               <td className={styles["cell"]}>{d.gamer_tag}</td>
               <td className={styles["cell"]}>{d.elo}</td>

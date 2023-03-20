@@ -1,9 +1,27 @@
 .elo-table {
-  width: 100%;
+  margin: 32px auto;
+  width: 80%;
+  border: 1px solid var(--black);
+  background: var(--white);
   border-collapse: collapse;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.header {
+  height: 2rem;
+  background-color: var(--secondary);
+  color: var(--white);
+  font-size: clamp(1rem, 3vw, 2rem);
+  text-align: left;
+  border-bottom: 1px solid var(--black);
 }
 
 .cell {
   padding: 5px;
-  border: 1px solid var(--black);
+  font-size: clamp(.75rem, 2vw, 1.5rem);
+  border-bottom: 1px solid var(--black);
+}
+
+.row:nth-child(odd) {
+  background-color: #d9d9d9;
 }

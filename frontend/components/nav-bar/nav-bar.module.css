@@ -4,8 +4,10 @@
   padding: 1rem;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--white);
+  background-color: var(--secondary);
+  color: var(--white);
   border-bottom: 1px solid var(--black);
+  font-family: 'Montserrat', sans-serif;
 }
 
 .nav-menu-items {
