@@ -4,7 +4,13 @@
   border: 1px solid var(--black);
   background: var(--white);
   border-collapse: collapse;
-  font-family: 'Montserrat', sans-serif;
+}
+
+.table-title {
+  font-size: 2rem;
+  margin-top: 32px;
+  margin-bottom: -30px;
+  text-align: center;
 }
 
 .header {
