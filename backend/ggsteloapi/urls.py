@@ -40,4 +40,5 @@ urlpatterns = [
                              cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
     path('api/', include('ggstelo.urls')),
+    path('dj-rest-auth/', include('dj_rest_auth.urls'))
 ]

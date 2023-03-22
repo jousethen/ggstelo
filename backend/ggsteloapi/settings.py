@@ -103,16 +103,23 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'ggstelo.serializers.CustomUserModelSerializer'
 }
 
+REST_AUTH = {
+    'JWT_AUTH_COOKIE': 'ggstelo-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'ggst-refresh-token',
+    'USE_JWT': True,
+}
+
 # setup the auth classes
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "dj_rest_auth.utils.JWTCookieAuthentication",
-    )
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    ),
 }
 
 ROOT_URLCONF = 'ggsteloapi.urls'

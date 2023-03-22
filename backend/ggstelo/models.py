@@ -54,6 +54,7 @@ class CustomUserModel(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         verbose_name = "Custom User"
+        
 class Player(models.Model):
     id = models.CharField(max_length=50, primary_key=True, unique=True)
     slug = models.SlugField(max_length=50, unique=False)

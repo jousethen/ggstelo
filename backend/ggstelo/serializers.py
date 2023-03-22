@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Player, Tournament
-
+from .models import Player, Tournament, CustomUserModel
+from django.conf import settings
 
 class PlayerSerializer(serializers.ModelSerializer):
 
@@ -15,3 +15,21 @@ class TournamentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tournament
         fields = ["name", "slug", "match_set"]
+
+class CustomUserModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUserModel
+        fields = [
+            "userId",
+            "username",
+            "email", 
+            "password",
+        ]
+    def create(self, validated_data):
+        user = CustomUserModel.objects.create_user(
+            validated_data["username"],
+            validated_data["email"],
+            validated_data["password"]
+        )
+        
+        return user
